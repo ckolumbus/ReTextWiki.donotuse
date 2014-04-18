@@ -51,7 +51,7 @@ from mikidown.utils import LineEditDialog, ViewedNoteIcon, parseHeaders, parseTi
  QtPrintSupport.QPrintPreviewDialog, QtPrintSupport.QPrinter)
 (QWebPage, QWebView) = (QtWebKitWidgets.QWebPage, QtWebKitWidgets.QWebView)
 
-(QWidget, QDockWidget) = (QtGui.QTableWidget, QtGui.QDockWidget)
+(QWidget, QDockWidget, QVBoxLayout) = (QtGui.QTableWidget, QtGui.QDockWidget, QtGui.QVBoxLayout)
 QSize = QtCore.QSize
 
 useAppDisplayName = hasattr(QApplication, 'applicationDisplayName')
@@ -376,7 +376,13 @@ class ReTextWikiWindow(QMainWindow):
                 self.actionEnableSC.setChecked(True)
                 self.enableSC(True)
 
+        self.initWiki()
+
+    def initWiki(self):
+
         # retextWiki --
+        # --> wiki init
+
         # Read notebookList, open the first notebook.
         notebooks = Mikibook.read()
         if len(notebooks) == 0:
@@ -403,20 +409,27 @@ class ReTextWikiWindow(QMainWindow):
         #self.viewedList.setIconSize(QSize(16, 16))
         #self.viewedList.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
         #self.viewedListActions = []
-        #self.noteSplitter = QSplitter(Qt.Horizontal)
+        self.noteSplitter = QSplitter(Qt.Horizontal)
 
         self.dockIndex = QDockWidget("Index")
         self.dockSearch = QDockWidget("Search")
-        #self.searchEdit = QLineEdit()
-        #self.searchView = MikiSearch(self)
+        self.searchEdit = QLineEdit()
+        self.searchView = MikiSearch(self)
         self.searchTab = QWidget()
         self.dockToc = QDockWidget("TOC")
         self.tocTree = TocTree()
         self.dockAttachment = QDockWidget("Attachment")
         self.attachmentView = AttachmentView(self)
-        self.initWiki()
 
-    def initWiki(self):
+        #<-- wiki init done
+
+        #--> setup Wiki Window
+        searchLayout = QVBoxLayout()
+        searchLayout.addWidget(self.searchEdit)
+        searchLayout.addWidget(self.searchView)
+        self.searchTab.setLayout(searchLayout)
+        self.tocTree.header().close()
+
         self.dockIndex.setObjectName("Index")
         self.dockIndex.setWidget(self.notesTree)
         self.dockSearch.setObjectName("Search")
