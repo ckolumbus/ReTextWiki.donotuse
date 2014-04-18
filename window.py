@@ -379,6 +379,7 @@ class ReTextWikiWindow(QMainWindow):
         self.initWiki()
 
     def initWiki(self):
+        from .functions import initTree
 
         # retextWiki --
         # --> wiki init
@@ -399,7 +400,7 @@ class ReTextWikiWindow(QMainWindow):
         ################ Setup core components ################
         self.notesTree = MikiTree(self)
         self.notesTree.setObjectName("notesTree")
-        #self.initTree(self.notePath, self.notesTree)
+        initTree(self.notePath, self.notesTree)
         self.notesTree.sortItems(0, Qt.AscendingOrder)
 
         self.ix = None
@@ -449,6 +450,32 @@ class ReTextWikiWindow(QMainWindow):
         self.tabifyDockWidget(self.dockToc, self.dockAttachment)
         self.setTabPosition(Qt.LeftDockWidgetArea, QTabWidget.North)
         self.dockIndex.raise_()      # Put dockIndex on top of the tab stack
+
+        self.notesTree.currentItemChanged.connect(
+            self.currentItemChangedWrapper)
+
+    def currentItemChangedWrapper(self, current, previous):
+        if current is None:
+            return
+        #if previous != None and self.notesTree.pageExists(previous):
+        prev = self.notesTree.itemToPage(previous)
+        if self.notesTree.pageExists(prev):
+            #self.saveNote(previous)
+            pass
+
+        currentFile = self.notesTree.itemToFile(current)
+        self.openFileWrapper(currentFile)
+
+        # Update attachmentView to show corresponding attachments.
+        attachmentdir = self.notesTree.itemToAttachmentDir(current)
+        self.attachmentView.model.setRootPath(attachmentdir)
+        #self.__logger.debug("currentItemChangedWrapper: %s", attachmentdir)
+        index = self.attachmentView.model.index(attachmentdir)
+        if index.row() == -1:
+            index = self.attachmentView.model.index(self.settings.attachmentPath)
+            #self.attachmentView.model.setFilter(QDir.Files)
+            #self.attachmentView.setModel(self.attachmentView.model)
+        self.attachmentView.setRootIndex(index)
 
     def initConfig(self):
         self.font = None
