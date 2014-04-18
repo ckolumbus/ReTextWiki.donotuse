@@ -41,9 +41,6 @@ class ReTextWikiWindow(ReTextWindow):
     def __init__(self, parent=None):
         ReTextWindow.__init__(self, parent)
 
-        # retextWiki --
-        # --> wiki init
-
         # Read notebookList, open the first notebook.
         notebooks = Mikibook.read()
         if len(notebooks) == 0:
@@ -114,10 +111,23 @@ class ReTextWikiWindow(ReTextWindow):
         #self.notesTree.currentItemChanged.connect(
         #    self.currentItemChangedWrapper)
         self.notesTree.itemDoubleClicked.connect(
-            self.loadItem)
+            self.loadItem
+        )
 
+        self.tabWidget.currentChanged.connect(self.changeIndexWiki)
+        self.tabWidget.tabCloseRequested.connect(self.closeTabWiki)
 
-    def currentItemChangedWrapper(self, current, previous):
+    def changeIndexWiki(self):
+        pass
+
+    def closeTabWiki(self):
+        pass
+
+    def saveFileMain(self, dlg):
+        ReTextWindow.saveFileMain(self, dlg)
+        # TODO: add indexing code
+
+    def currentItemChangedWrapperWiki(self, current, previous):
         if current is None:
             return
         #if previous != None and self.notesTree.pageExists(previous):
@@ -125,9 +135,9 @@ class ReTextWikiWindow(ReTextWindow):
         if self.notesTree.pageExists(prev):
             #self.saveNote(previous)
             pass
-        self.loadItem(current)
+        self.loadItemWiki(current)
 
-    def loadItem(self, item):
+    def loadItemWiki(self, item):
         currentFile = self.notesTree.itemToFile(item)
         self.openFileWrapper(currentFile)
 
