@@ -71,7 +71,6 @@ class ReTextWikiWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         self.initConfig()
-        self.initWiki()
         self.resize(800, 600)
         if globalSettings.windowGeometry:
             self.restoreGeometry(globalSettings.windowGeometry)
@@ -393,9 +392,9 @@ class ReTextWikiWindow(QMainWindow):
 
         ################ Setup core components ################
         self.notesTree = MikiTree(self)
-        #self.notesTree.setObjectName("notesTree")
+        self.notesTree.setObjectName("notesTree")
         #self.initTree(self.notePath, self.notesTree)
-        #self.notesTree.sortItems(0, Qt.AscendingOrder)
+        self.notesTree.sortItems(0, Qt.AscendingOrder)
 
         self.ix = None
         #self.setupWhoosh()
@@ -407,33 +406,34 @@ class ReTextWikiWindow(QMainWindow):
         #self.noteSplitter = QSplitter(Qt.Horizontal)
 
         self.dockIndex = QDockWidget("Index")
-        #self.dockSearch = QDockWidget("Search")
+        self.dockSearch = QDockWidget("Search")
         #self.searchEdit = QLineEdit()
         #self.searchView = MikiSearch(self)
-        #self.searchTab = QWidget()
-        #self.dockToc = QDockWidget("TOC")
-        #self.tocTree = TocTree()
-        #self.dockAttachment = QDockWidget("Attachment")
-        #self.attachmentView = AttachmentView(self)
+        self.searchTab = QWidget()
+        self.dockToc = QDockWidget("TOC")
+        self.tocTree = TocTree()
+        self.dockAttachment = QDockWidget("Attachment")
+        self.attachmentView = AttachmentView(self)
+        self.initWiki()
 
     def initWiki(self):
         self.dockIndex.setObjectName("Index")
         self.dockIndex.setWidget(self.notesTree)
-        #self.dockSearch.setObjectName("Search")
-        #self.dockSearch.setWidget(self.searchTab)
-        #self.dockToc.setObjectName("TOC")
-        #self.dockToc.setWidget(self.tocTree)
-        #self.dockAttachment.setObjectName("Attachment")
-        #self.dockAttachment.setWidget(self.attachmentView)
+        self.dockSearch.setObjectName("Search")
+        self.dockSearch.setWidget(self.searchTab)
+        self.dockToc.setObjectName("TOC")
+        self.dockToc.setWidget(self.tocTree)
+        self.dockAttachment.setObjectName("Attachment")
+        self.dockAttachment.setWidget(self.attachmentView)
 
         self.setDockOptions(QMainWindow.VerticalTabs)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.dockIndex)
-        #self.addDockWidget(Qt.LeftDockWidgetArea, self.dockSearch)
-        #self.addDockWidget(Qt.LeftDockWidgetArea, self.dockToc)
-        #self.addDockWidget(Qt.LeftDockWidgetArea, self.dockAttachment)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.dockSearch)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.dockToc)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.dockAttachment)
         self.tabifyDockWidget(self.dockIndex, self.dockSearch)
-        #self.tabifyDockWidget(self.dockSearch, self.dockToc)
-        #self.tabifyDockWidget(self.dockToc, self.dockAttachment)
+        self.tabifyDockWidget(self.dockSearch, self.dockToc)
+        self.tabifyDockWidget(self.dockToc, self.dockAttachment)
         self.setTabPosition(Qt.LeftDockWidgetArea, QTabWidget.North)
         self.dockIndex.raise_()      # Put dockIndex on top of the tab stack
 
