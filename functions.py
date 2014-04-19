@@ -9,30 +9,19 @@ from PyQt4.QtGui import (QTreeWidgetItem)
 
 _logger = logging.getLogger(__name__)
 
-class Whoosh():
-    def __init__(self):
-        pass
-
-    def setup(self):
-        pass
-
-    def reindex(self):
-        pass
-
-
 def initTree(notePath, parent):
     ''' When there exist foo.md, foo.mkd, foo.markdown,
         only one item will be shown in notesTree.
     '''
     if not QDir(notePath).exists():
         return
-    notebookDir = QDir(notePath)
-    notesList = notebookDir.entryInfoList(['*.md', '*.mkd', '*.markdown'],
+    notebook_dir = QDir(notePath)
+    notes_list = notebook_dir.entryInfoList(['*.md', '*.mkd', '*.markdown', '*.rst'],
                                            QDir.NoFilter,
                                            QDir.Name|QDir.IgnoreCase)
-    nl = [note.completeBaseName() for note in notesList]
-    noduplicate = list(set(nl))
-    for name in noduplicate:
+    nl = [note.completeBaseName() for note in notes_list]
+    no_duplicate = list(set(nl))
+    for name in no_duplicate:
         item = QTreeWidgetItem(parent, [name])
         path = notePath + '/' + name
         initTree(path, item)
