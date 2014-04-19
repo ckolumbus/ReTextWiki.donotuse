@@ -22,8 +22,6 @@ from mikidown.mikibook import Mikibook
 from mikidown.config import __appname__, __version__
 from mikidown.mikibook import NotebookListDialog
 from mikidown.mikitree import MikiTree, TocTree
-from mikidown.mikiedit import MikiEdit
-from mikidown.mikiview import MikiView
 from mikidown.mikisearch import MikiSearch
 from mikidown.attachment import AttachmentView
 from mikidown.highlighter import MikiHighlighter
@@ -32,10 +30,9 @@ from mikidown.utils import LineEditDialog, ViewedNoteIcon, parseHeaders, parseTi
 from .functions import initTree
 from ReText.window import ReTextWindow
 
-(Qt) = (QtCore.Qt)
+(Qt, QSize) = (QtCore.Qt, QtCore.QSize)
 (QLineEdit, QSplitter, QMainWindow, QTabWidget) = (QtWidgets.QLineEdit, QtWidgets.QSplitter, QtWidgets.QMainWindow, QtWidgets.QTabWidget)
 (QWidget, QDockWidget, QVBoxLayout) = (QtGui.QTableWidget, QtGui.QDockWidget, QtGui.QVBoxLayout)
-QSize = QtCore.QSize
 
 class ReTextWikiWindow(ReTextWindow):
     def __init__(self, parent=None):
@@ -111,8 +108,7 @@ class ReTextWikiWindow(ReTextWindow):
         #self.notesTree.currentItemChanged.connect(
         #    self.currentItemChangedWrapper)
         self.notesTree.itemDoubleClicked.connect(
-            self.loadItem
-        )
+            self.loadItemWiki)
 
         self.tabWidget.currentChanged.connect(self.changeIndexWiki)
         self.tabWidget.tabCloseRequested.connect(self.closeTabWiki)
