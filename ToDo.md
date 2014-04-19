@@ -3,6 +3,7 @@
 * view attachments :either
     * list whole tree and jump to sub-dir if window changes
     * or recreate mikidown behavior (just list page associated attach dir)
+* set base_url for wikilinks extension correctly when doing preview
 
 * Drag-n-Drop of local files and insert as links (NEED to work for md & rst!!!)<br>
   from mikiedit (overwrite QTextEdit)
@@ -18,3 +19,6 @@
             Else use the default insertFromMimeData implementation
             """
 </pre>
+
+* mikidown file extension explicitly listed in window.py:initTree() & mikitree.py:pageToFile()
+  the latter is not overwriteable :-(
