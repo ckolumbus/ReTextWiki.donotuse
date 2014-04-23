@@ -1,6 +1,8 @@
 __author__ = 'CKolumbus'
 
+import shutil
 from multiprocessing import Process
+import codecs
 
 from whoosh.index import create_in, open_dir
 from whoosh.qparser import QueryParser, RegexPlugin
@@ -20,27 +22,29 @@ class Whoosh():
             QDir().mkpath(self.indexDir)
             self.ix = create_in(self.indexDir, self.schema)
             # Fork a process to update index, which benefit responsiveness.
-            p = Process(target=self.whoosh_index, args=())
-            p.start()
+            #p = Process(target=self.whoosh_index, args=(it))
+            #p.start()
+            self.whoosh_index(it)
             pass
 
-    def reindex(self):
+    def reindex(self, it):
+        try:
+            shutil.rmtree(self.indexDir)
+        finally:
+            self.open(it)
         pass
 
     # TODO: remove noteTree dependent interator code
-    def whoosh_index(self):
-        it = QTreeWidgetItemIterator(
-            self.notesTree, QTreeWidgetItemIterator.All)
+    def whoosh_index(self, it):
         writer = self.ix.writer()
-        while it.value():
-            treeItem = it.value()
-            name = self.notesTree.itemToPage(treeItem)
-            path = os.path.join(self.notesTree.pageToFile(name))
-            print(path)
-            fileobj = open(path, 'r')
+        for p in it:
+            path = p[0]
+            name = p[1]
+            print(path, name)
+            fileobj = codecs.open(path, 'r', "utf-8")
             content = fileobj.read()
             fileobj.close()
             writer.add_document(
-                path=name, title=parseTitle(content, name), content=content)
-            it += 1
+                path=name, title=name, content=content)
+
         writer.commit()
