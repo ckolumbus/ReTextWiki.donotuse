@@ -32,7 +32,7 @@ from ReText.window import ReTextWindow
 
 (Qt, QSize) = (QtCore.Qt, QtCore.QSize)
 (QLineEdit, QSplitter, QMainWindow, QTabWidget) = (QtWidgets.QLineEdit, QtWidgets.QSplitter, QtWidgets.QMainWindow, QtWidgets.QTabWidget)
-(QWidget, QDockWidget, QVBoxLayout) = (QtGui.QTableWidget, QtGui.QDockWidget, QtGui.QVBoxLayout)
+(QWidget, QDockWidget, QVBoxLayout, QKeySequence) = (QtGui.QTableWidget, QtGui.QDockWidget, QtGui.QVBoxLayout, QtGui.QKeySequence)
 
 class ReTextWikiWindow(ReTextWindow):
     def __init__(self, parent=None):
@@ -113,6 +113,67 @@ class ReTextWikiWindow(ReTextWindow):
         self.tabWidget.currentChanged.connect(self.changeIndexWiki)
         self.tabWidget.tabCloseRequested.connect(self.closeTabWiki)
 
+        self.actions = dict()
+        self.setupActions()
+        menubar = self.menuBar()
+        menuWiki = menubar.addMenu(self.tr('Wiki'))
+
+        menuWiki.addAction(self.actions['newPage'])
+        menuWiki.addAction(self.actions['newSubpage'])
+        menuWiki.addAction(self.actions['importPage'])
+        menuWiki.addAction(self.actions['openNotebook'])
+        menuWiki.addAction(self.actions['reIndex'])
+        menuWiki.addSeparator()
+        menuWiki.addAction(self.actions['renamePage'])
+        menuWiki.addAction(self.actions['delPage'])
+        menuWiki.addSeparator()
+        menuWiki.addAction(self.actions['insertImage'])
+
+
+    def setupActions(self):
+
+        # Global Actions
+        actTabIndex = self.act(self.tr('Switch to Index Tab'),
+            trig=lambda: self.raiseDock(self.dockIndex), shct='Ctrl+Shift+I')
+        actTabSearch = self.act(self.tr('Switch to Search Tab'),
+            trig=lambda: self.raiseDock(self.dockSearch), shct='Ctrl+Shift+F')
+        self.addAction(actTabIndex)
+        self.addAction(actTabSearch)
+
+        ################ Menu Actions ################
+        # actions in menuFile
+        actionNewPage = self.act(self.tr('&New Page...'),
+            trig=self.notesTree.newPage, shct=QKeySequence.New)
+        self.actions.update(newPage=actionNewPage)
+
+        actionNewSubpage = self.act(self.tr('New Sub&page...'),
+            trig=self.notesTree.newSubpage, shct='Ctrl+Shift+N')
+        self.actions.update(newSubpage=actionNewSubpage)
+
+        actionImportPage = self.act(self.tr('&Import Page...'), trig=self.importPage)
+        self.actions.update(importPage=actionImportPage)
+
+        actionOpenNotebook = self.act(self.tr('&Open Notebook...'),
+            trig=self.openNotebook)
+        self.actions.update(openNotebook=actionOpenNotebook)
+
+        actionReIndex = self.act(self.tr('Re-index'), trig=self.reIndex)
+        self.actions.update(reIndex=actionReIndex)
+
+        actionRenamePage = self.act(self.tr('&Rename Page...'),
+            trig=self.notesTree.renamePage, shct='F2')
+        self.actions.update(renamePage=actionRenamePage)
+
+        actionDelPage = self.act(self.tr('&Delete Page'),
+            trig=self.notesTree.delPageWrapper )#, QKeySequence.Delete)
+        self.actions.update(delPage=actionDelPage)
+
+
+        actionInsertImage = self.act(self.tr('&Insert Attachment'),
+            trig=self.insertAttachment, shct='Ctrl+I')
+        actionInsertImage.setEnabled(False)
+        self.actions.update(insertImage=actionInsertImage)
+
     def changeIndexWiki(self):
         pass
 
@@ -147,3 +208,18 @@ class ReTextWikiWindow(ReTextWindow):
             #self.attachmentView.model.setFilter(QDir.Files)
             #self.attachmentView.setModel(self.attachmentView.model)
         self.attachmentView.setRootIndex(index)
+
+    def importPage(self):
+        pass
+
+    def openNotebook(self):
+        pass
+
+    def reIndex(self):
+        pass
+
+    def insertAttachment(self):
+        pass
+
+    def updateAttachmentView(self):
+        pass
