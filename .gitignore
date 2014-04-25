@@ -1,0 +1,10 @@
+.idea
+*~
+*.pyc
+ReTextWiki/__pycache__
+ReText/__pycache__
+locale/*.qm
+MANIFEST
+build
+dist
+tests/__pycache__
